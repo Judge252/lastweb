@@ -601,7 +601,7 @@ function updateFooterYear() {
 
     const currentYear = new Date().getFullYear();
 
-    footerBottom.innerHTML = `&copy; ${currentYear} عيادة العلاج الطبيعي والتأهيل. جميع الحقوق محفوظة.`;
+    footerBottom.innerHTML = `&copy; ${currentYear} العيادة. جميع الحقوق محفوظة.`;
 }
 
 /* =========================================================
@@ -690,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHeaderOnScroll();
 
     console.log(
-        '%cعيادة العلاج الطبيعي والتأهيل',
+        '%cالعيادة',
         'color:#2563eb;font-size:20px;font-weight:900;'
     );
 
