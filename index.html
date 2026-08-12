@@ -7,10 +7,36 @@
     <meta name="theme-color" content="#0c0f1a">
     <title>مركز طبي متخصص للمفاصل والعضلات والأعصاب والحركة</title>
 
-    <!-- Google Font Cairo -->
+    <!-- Apply the visitor's locale before first paint; full translations load from script.js. -->
+    <script>
+        (function () {
+            var supportedLanguages = ['ar', 'en', 'he'];
+            var savedLanguage;
+
+            try {
+                savedLanguage = window.localStorage.getItem('clinic-language');
+            } catch (error) {
+                savedLanguage = null;
+            }
+
+            var browserLanguage = (window.navigator.language || '').toLowerCase();
+            var detectedLanguage = supportedLanguages.find(function (language) {
+                return browserLanguage.indexOf(language) === 0;
+            });
+            var initialLanguage = supportedLanguages.indexOf(savedLanguage) !== -1
+                ? savedLanguage
+                : (detectedLanguage || 'ar');
+
+            document.documentElement.lang = initialLanguage;
+            document.documentElement.dir = initialLanguage === 'en' ? 'ltr' : 'rtl';
+            document.documentElement.dataset.languageReady = 'pending';
+        }());
+    </script>
+
+    <!-- Language-specific web fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -30,28 +56,65 @@
 
     <!-- Header / Navigation -->
     <header class="header glass-panel" id="header">
-        <nav class="navbar" aria-label="القائمة الرئيسية">
+        <nav class="navbar" aria-label="القائمة الرئيسية" data-i18n-aria-label="accessibility.mainNavigation">
             <div class="container">
                 <div class="nav-wrapper">
-                    <a href="#home" class="logo" aria-label="العودة للرئيسية">
-                        <img src="assets/images/logo.png" alt="شعار العيادة" class="logo-img" decoding="async">
+                    <a href="#home" class="logo" aria-label="العودة للرئيسية" data-i18n-aria-label="accessibility.backHome">
+                        <img src="assets/images/logo.png" alt="شعار العيادة" data-i18n-alt="accessibility.clinicLogo" class="logo-img" decoding="async">
                     </a>
 
                     <ul class="nav-menu" id="navMenu">
-                        <li><a href="#home" class="nav-link">الرئيسية</a></li>
-                        <li><a href="#services" class="nav-link">الخدمات العلاجية</a></li>
-                        <li><a href="#team" class="nav-link">الفريق الطبي</a></li>
-                        <li><a href="#booking" class="nav-link">الحجز</a></li>
-                        <li><a href="#contact" class="nav-link">تواصل معنا</a></li>
+                        <li><a href="#home" class="nav-link" data-i18n="nav.home">الرئيسية</a></li>
+                        <li><a href="#services" class="nav-link" data-i18n="nav.services">الخدمات العلاجية</a></li>
+                        <li><a href="#team" class="nav-link" data-i18n="nav.team">الفريق الطبي</a></li>
+                        <li><a href="#booking" class="nav-link" data-i18n="nav.booking">الحجز</a></li>
+                        <li><a href="#contact" class="nav-link" data-i18n="nav.contact">تواصل معنا</a></li>
                     </ul>
 
                     <div class="nav-actions">
-                        <a href="https://wa.me/972526020026" class="whatsapp-btn" target="_blank" rel="noopener noreferrer" aria-label="احجز الآن عبر واتساب">
+                        <a href="https://wa.me/972526020026" class="whatsapp-btn" target="_blank" rel="noopener noreferrer" aria-label="احجز الآن عبر واتساب" data-i18n-aria-label="accessibility.bookWhatsApp">
                             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-                            <span class="whatsapp-btn-text">احجز الآن</span>
+                            <span class="whatsapp-btn-text" data-i18n="common.bookNow">احجز الآن</span>
                         </a>
 
-                        <button class="hamburger" id="hamburger" type="button" aria-label="فتح وإغلاق القائمة" aria-controls="navMenu" aria-expanded="false">
+                        <div class="language-selector" id="languageSelector">
+                            <button
+                                class="language-toggle"
+                                id="languageToggle"
+                                type="button"
+                                aria-haspopup="menu"
+                                aria-expanded="false"
+                                aria-controls="languageMenu"
+                                aria-label="اختيار اللغة"
+                                data-i18n-aria-label="language.selectorLabel">
+                                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                                <span class="language-toggle-label" id="activeLanguageLabel">العربية</span>
+                                <i class="fa-solid fa-chevron-down language-toggle-chevron" aria-hidden="true"></i>
+                            </button>
+
+                            <ul class="language-menu" id="languageMenu" role="menu" aria-labelledby="languageToggle" hidden>
+                                <li role="none">
+                                    <button type="button" class="language-option is-active" role="menuitemradio" data-language="ar" aria-checked="true" lang="ar" dir="rtl">
+                                        <span>العربية</span>
+                                        <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button type="button" class="language-option" role="menuitemradio" data-language="en" aria-checked="false" lang="en" dir="ltr">
+                                        <span>English</span>
+                                        <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                                <li role="none">
+                                    <button type="button" class="language-option" role="menuitemradio" data-language="he" aria-checked="false" lang="he" dir="rtl">
+                                        <span>עברית</span>
+                                        <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <button class="hamburger" id="hamburger" type="button" aria-label="فتح القائمة" data-i18n-aria-label="accessibility.openMenu" aria-controls="navMenu" aria-expanded="false">
                             <span></span>
                             <span></span>
                             <span></span>
@@ -70,25 +133,25 @@
                     <div class="hero-top-image">
                         <div class="hero-slider-frame">
                             <div class="hero-slider">
-                                <img src="assets/images/hero/hero.jpeg" alt="جلسة علاج وتأهيل طبي داخل العيادة" class="hero-slide active" fetchpriority="high">
-                                <img src="assets/images/hero/hero-2.jpg" alt="معدات مستخدمة في العلاج الطبيعي والتأهيل" class="hero-slide" loading="lazy">
-                                <img src="assets/images/hero/hero-3.jpg" alt="فريق طبي داخل مركز العلاج والتأهيل" class="hero-slide" loading="lazy">
+                                <img src="assets/images/hero/hero.jpeg" alt="جلسة علاج وتأهيل طبي داخل العيادة" data-i18n-alt="hero.images.session" class="hero-slide active" fetchpriority="high">
+                                <img src="assets/images/hero/hero-2.jpg" alt="معدات مستخدمة في العلاج الطبيعي والتأهيل" data-i18n-alt="hero.images.equipment" class="hero-slide" loading="lazy">
+                                <img src="assets/images/hero/hero-3.jpg" alt="فريق طبي داخل مركز العلاج والتأهيل" data-i18n-alt="hero.images.team" class="hero-slide" loading="lazy">
                             </div>
                         </div>
                     </div>
 
                     <div class="hero-top-copy">
-                        <span class="hero-kicker">علاج وتأهيل طبي متخصص</span>
+                        <span class="hero-kicker" data-i18n="hero.kicker">علاج وتأهيل طبي متخصص</span>
 
-                        <h1 class="hero-title" id="hero-title" lang="ar" dir="rtl">
-                            <span class="hero-title-primary">مركز طبي متخصص</span>
-                            <span class="hero-title-highlight">بمشاكل المفاصل والعضلات</span>
-                            <span class="hero-title-secondary">ومشاكل الأعصاب والحركة</span>
+                        <h1 class="hero-title" id="hero-title">
+                            <span class="hero-title-primary" data-i18n="hero.titlePrimary">مركز طبي متخصص</span>
+                            <span class="hero-title-highlight" data-i18n="hero.titleHighlight">بمشاكل المفاصل والعضلات</span>
+                            <span class="hero-title-secondary" data-i18n="hero.titleSecondary">ومشاكل الأعصاب والحركة</span>
                         </h1>
 
                         <div class="hero-card-actions">
                             <a href="#services" class="btn btn-secondary hero-services-btn">
-                                <span>استعرض الخدمات</span>
+                                <span data-i18n="hero.servicesButton">استعرض الخدمات</span>
                                 <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                             </a>
                         </div>
@@ -101,9 +164,9 @@
         <section class="services section-shell" id="services" aria-labelledby="services-title">
             <div class="container">
                 <div class="section-heading">
-                    <span class="eyebrow">الخدمات العلاجية</span>
-                    <h2 class="section-title" id="services-title">رعاية متخصصة لمشاكل المفاصل والعضلات</h2>
-                    <p class="section-description">خدمات طبية وعلاجية وتأهيلية لمشاكل الأعصاب والحركة وفق احتياجات كل حالة.</p>
+                    <span class="eyebrow" data-i18n="services.eyebrow">الخدمات العلاجية</span>
+                    <h2 class="section-title" id="services-title" data-i18n="services.heading">رعاية متخصصة لمشاكل المفاصل والعضلات</h2>
+                    <p class="section-description" data-i18n="services.description">خدمات طبية وعلاجية وتأهيلية لمشاكل الأعصاب والحركة وفق احتياجات كل حالة.</p>
                 </div>
 
                 <div class="services-grid">
@@ -112,6 +175,7 @@
                             <img
                                 src="assets/images/services/استشارة طبيب متخصص.jpg"
                                 alt="استشارة طبيب متخصص"
+                                data-i18n-alt="services.items.consultation.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -121,8 +185,8 @@
                                 <i class="fa-solid fa-user-doctor"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">استشارة طبيب متخصص</h3>
-                                <p class="service-description">طبيب عظام، طبيب مفاصل، طبيب أعصاب.</p>
+                                <h3 class="service-title" data-i18n="services.items.consultation.title">استشارة طبيب متخصص</h3>
+                                <p class="service-description" data-i18n="services.items.consultation.description">طبيب عظام، طبيب مفاصل، طبيب أعصاب.</p>
                             </div>
                         </div>
                     </article>
@@ -132,6 +196,7 @@
                             <img
                                 src="assets/images/services/علاج مشاكل العامود الفقري.jpg"
                                 alt="علاج مشاكل العامود الفقري"
+                                data-i18n-alt="services.items.spine.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -141,8 +206,8 @@
                                 <i class="fa-solid fa-bone"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">علاج مشاكل العامود الفقري</h3>
-                                <p class="service-description">مشاكل الرقبة، الظهر العلوي والسفلي.</p>
+                                <h3 class="service-title" data-i18n="services.items.spine.title">علاج مشاكل العامود الفقري</h3>
+                                <p class="service-description" data-i18n="services.items.spine.description">مشاكل الرقبة، الظهر العلوي والسفلي.</p>
                             </div>
                         </div>
                     </article>
@@ -152,6 +217,7 @@
                             <img
                                 src="assets/images/services/علاج مشاكل المفاصل.jpg"
                                 alt="علاج مشاكل المفاصل"
+                                data-i18n-alt="services.items.joints.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -161,8 +227,8 @@
                                 <i class="fa-solid fa-person-walking"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">علاج مشاكل المفاصل</h3>
-                                <p class="service-description">مشاكل الركب، مشاكل الكتف وغيرها.</p>
+                                <h3 class="service-title" data-i18n="services.items.joints.title">علاج مشاكل المفاصل</h3>
+                                <p class="service-description" data-i18n="services.items.joints.description">مشاكل الركب، مشاكل الكتف وغيرها.</p>
                             </div>
                         </div>
                     </article>
@@ -172,6 +238,7 @@
                             <img
                                 src="assets/images/services/علاج بعد الإصابات والعمليات الجراحية.jpg"
                                 alt="علاج بعد الإصابات والعمليات الجراحية"
+                                data-i18n-alt="services.items.postSurgery.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -181,8 +248,8 @@
                                 <i class="fa-solid fa-kit-medical"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">علاج بعد الإصابات والعمليات الجراحية</h3>
-                                <p class="service-description">علاج وتأهيل بعد الإصابات والعمليات الجراحية.</p>
+                                <h3 class="service-title" data-i18n="services.items.postSurgery.title">علاج بعد الإصابات والعمليات الجراحية</h3>
+                                <p class="service-description" data-i18n="services.items.postSurgery.description">علاج وتأهيل بعد الإصابات والعمليات الجراحية.</p>
                             </div>
                         </div>
                     </article>
@@ -192,6 +259,7 @@
                             <img
                                 src="assets/images/services/علاج المشاكل العصبية والحركية ومشاكل التوازن.jfif"
                                 alt="علاج المشاكل العصبية والحركية ومشاكل التوازن"
+                                data-i18n-alt="services.items.neuroBalance.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -201,8 +269,8 @@
                                 <i class="fa-solid fa-brain"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">علاج المشاكل العصبية والحركية ومشاكل التوازن</h3>
-                                <p class="service-description">علاج وتأهيل المشاكل العصبية والحركية ومشاكل التوازن.</p>
+                                <h3 class="service-title" data-i18n="services.items.neuroBalance.title">علاج المشاكل العصبية والحركية ومشاكل التوازن</h3>
+                                <p class="service-description" data-i18n="services.items.neuroBalance.description">علاج وتأهيل المشاكل العصبية والحركية ومشاكل التوازن.</p>
                             </div>
                         </div>
                     </article>
@@ -212,6 +280,7 @@
                             <img
                                 src="assets/images/services/علاج الدوخة.jpg"
                                 alt="علاج الدوخة"
+                                data-i18n-alt="services.items.dizziness.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -221,8 +290,8 @@
                                 <i class="fa-solid fa-arrows-to-circle"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">علاج الدوخة</h3>
-                                <p class="service-description">تقييم وعلاج مشاكل الدوخة والتوازن.</p>
+                                <h3 class="service-title" data-i18n="services.items.dizziness.title">علاج الدوخة</h3>
+                                <p class="service-description" data-i18n="services.items.dizziness.description">تقييم وعلاج مشاكل الدوخة والتوازن.</p>
                             </div>
                         </div>
                     </article>
@@ -232,6 +301,7 @@
                             <img
                                 src="assets/images/services/علاج المشاكل القلبية التنفسية.jpg"
                                 alt="علاج المشاكل القلبية التنفسية"
+                                data-i18n-alt="services.items.cardiorespiratory.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -241,8 +311,8 @@
                                 <i class="fa-solid fa-heart-pulse"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">علاج المشاكل القلبية التنفسية</h3>
-                                <p class="service-description">علاج وتأهيل المشاكل القلبية والتنفسية.</p>
+                                <h3 class="service-title" data-i18n="services.items.cardiorespiratory.title">علاج المشاكل القلبية التنفسية</h3>
+                                <p class="service-description" data-i18n="services.items.cardiorespiratory.description">علاج وتأهيل المشاكل القلبية والتنفسية.</p>
                             </div>
                         </div>
                     </article>
@@ -252,6 +322,7 @@
                             <img
                                 src="assets/images/services/مساج طبي.jpg"
                                 alt="مساج طبي"
+                                data-i18n-alt="services.items.massage.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -261,8 +332,8 @@
                                 <i class="fa-solid fa-hands"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">مساج طبي</h3>
-                                <p class="service-description">جلسات مساج طبي وفق احتياجات الحالة.</p>
+                                <h3 class="service-title" data-i18n="services.items.massage.title">مساج طبي</h3>
+                                <p class="service-description" data-i18n="services.items.massage.description">جلسات مساج طبي وفق احتياجات الحالة.</p>
                             </div>
                         </div>
                     </article>
@@ -272,6 +343,7 @@
                             <img
                                 src="assets/images/services/حجامة طبية.jpg"
                                 alt="حجامة طبية"
+                                data-i18n-alt="services.items.cupping.alt"
                                 loading="lazy"
                                 decoding="async">
                         </div>
@@ -281,8 +353,8 @@
                                 <i class="fa-solid fa-circle-dot"></i>
                             </div>
                             <div class="card-body">
-                                <h3 class="service-title">حجامة طبية</h3>
-                                <p class="service-description">جلسات حجامة طبية يقدمها معالجون مختصون.</p>
+                                <h3 class="service-title" data-i18n="services.items.cupping.title">حجامة طبية</h3>
+                                <p class="service-description" data-i18n="services.items.cupping.description">جلسات حجامة طبية يقدمها معالجون مختصون.</p>
                             </div>
                         </div>
                     </article>
@@ -294,14 +366,14 @@
         <section class="team section-shell" id="team" aria-labelledby="team-title">
             <div class="container">
                 <div class="section-heading">
-                    <span class="eyebrow">الفريق الطبي</span>
-                    <h2 class="section-title" id="team-title">فريق طبي وعلاجي متكامل</h2>
-                    <p class="section-description">
+                    <span class="eyebrow" data-i18n="team.eyebrow">الفريق الطبي</span>
+                    <h2 class="section-title" id="team-title" data-i18n="team.heading">فريق طبي وعلاجي متكامل</h2>
+                    <p class="section-description" data-i18n="team.description">
                         تعرّف على أعضاء الفريق واضغط على زر التفاصيل لعرض مجالات التخصص والخدمات المتاحة.
                     </p>
                     <p class="team-swipe-hint" aria-hidden="true">
                         <i class="fa-solid fa-hand-pointer"></i>
-                        <span>اسحب للتعرّف على باقي الفريق</span>
+                        <span data-i18n="team.swipeHint">اسحب للتعرّف على باقي الفريق</span>
                     </p>
                 </div>
 
@@ -309,12 +381,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="salem">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/سالم محيليه.jpg" alt="صورة سالم محيليه" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/سالم محيليه.jpg" alt="صورة سالم محيليه" data-i18n-alt="team.members.salem.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-salem">سالم محيليه</h3>
-                                <p class="team-role">أخصائي علاج طبيعي – فيزيوتربيا</p>
+                                <h3 class="team-name" id="specialist-name-salem" data-i18n="team.members.salem.name">سالم محيليه</h3>
+                                <p class="team-role" data-i18n="team.members.salem.role">أخصائي علاج طبيعي – فيزيوتربيا</p>
                             </div>
                         </div>
 
@@ -324,8 +396,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-salem"
-                            aria-label="عرض تفاصيل سالم محيليه">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل سالم محيليه"
+                            data-i18n-aria-label="team.members.salem.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -338,16 +411,16 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>المنصب</dt>
-                                        <dd>مؤسس ومدير العيادة</dd>
+                                        <dt data-i18n="team.labels.position">المنصب</dt>
+                                        <dd data-i18n="team.members.salem.position">مؤسس ومدير العيادة</dd>
                                     </div>
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>مختص بعلاج مشاكل المفاصل والعامود الفقري، وإعادة التأهيل بعد المشاكل العصبية والعمليات الجراحية.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.salem.specialties">مختص بعلاج مشاكل المفاصل والعامود الفقري، وإعادة التأهيل بعد المشاكل العصبية والعمليات الجراحية.</dd>
                                     </div>
                                     <div class="team-detail-item">
-                                        <dt>خدمات إضافية</dt>
-                                        <dd>علاج الرياضيين وعلاج الدوخة.</dd>
+                                        <dt data-i18n="team.labels.additionalServices">خدمات إضافية</dt>
+                                        <dd data-i18n="team.members.salem.additionalServices">علاج الرياضيين وعلاج الدوخة.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -357,12 +430,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="mohamed-adawi">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/البروفيسور محمد عدوي.png" alt="صورة البروفيسور محمد عدوي" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/البروفيسور محمد عدوي.png" alt="صورة البروفيسور محمد عدوي" data-i18n-alt="team.members.mohamedAdawi.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-mohamed-adawi">البروفيسور محمد عدوي</h3>
-                                <p class="team-role">طبيب عام وباطنية – أخصائي روماتزم ومفاصل</p>
+                                <h3 class="team-name" id="specialist-name-mohamed-adawi" data-i18n="team.members.mohamedAdawi.name">البروفيسور محمد عدوي</h3>
+                                <p class="team-role" data-i18n="team.members.mohamedAdawi.role">طبيب عام وباطنية – أخصائي روماتزم ومفاصل</p>
                             </div>
                         </div>
 
@@ -372,8 +445,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-mohamed-adawi"
-                            aria-label="عرض تفاصيل البروفيسور محمد عدوي">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل البروفيسور محمد عدوي"
+                            data-i18n-aria-label="team.members.mohamedAdawi.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -386,8 +460,8 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>الخبرة</dt>
-                                        <dd>خبرة أكثر من 35 سنة.</dd>
+                                        <dt data-i18n="team.labels.experience">الخبرة</dt>
+                                        <dd data-i18n="team.members.mohamedAdawi.experience">خبرة أكثر من 35 سنة.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -397,12 +471,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="fatima">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/الدكتورة فاطمه محيليه.jpeg" alt="صورة الدكتورة فاطمه محيليه" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/الدكتورة فاطمه محيليه.jpeg" alt="صورة الدكتورة فاطمه محيليه" data-i18n-alt="team.members.fatima.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-fatima">الدكتورة فاطمه محيليه</h3>
-                                <p class="team-role">طبيبة أعصاب مختصة</p>
+                                <h3 class="team-name" id="specialist-name-fatima" data-i18n="team.members.fatima.name">الدكتورة فاطمه محيليه</h3>
+                                <p class="team-role" data-i18n="team.members.fatima.role">طبيبة أعصاب مختصة</p>
                             </div>
                         </div>
 
@@ -412,8 +486,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-fatima"
-                            aria-label="عرض تفاصيل الدكتورة فاطمه محيليه">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل الدكتورة فاطمه محيليه"
+                            data-i18n-aria-label="team.members.fatima.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -426,12 +501,12 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>مشاكل الأعصاب، وباركنسون ومشاكل الحركة.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.fatima.specialties">مشاكل الأعصاب، وباركنسون ومشاكل الحركة.</dd>
                                     </div>
                                     <div class="team-detail-item">
-                                        <dt>التعليم</dt>
-                                        <dd>خريجة جامعة فرانكفورت – ألمانيا.</dd>
+                                        <dt data-i18n="team.labels.education">التعليم</dt>
+                                        <dd data-i18n="team.members.fatima.education">خريجة جامعة فرانكفورت – ألمانيا.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -441,12 +516,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="raafat">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/رأفت حبيب الله.jpg" alt="صورة رأفت حبيب الله" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/رأفت حبيب الله.jpg" alt="صورة رأفت حبيب الله" data-i18n-alt="team.members.raafat.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-raafat">رأفت حبيب الله</h3>
-                                <p class="team-role">أخصائي علاج طبيعي – فيزيوتربيا</p>
+                                <h3 class="team-name" id="specialist-name-raafat" data-i18n="team.members.raafat.name">رأفت حبيب الله</h3>
+                                <p class="team-role" data-i18n="team.members.raafat.role">أخصائي علاج طبيعي – فيزيوتربيا</p>
                             </div>
                         </div>
 
@@ -456,8 +531,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-raafat"
-                            aria-label="عرض تفاصيل رأفت حبيب الله">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل رأفت حبيب الله"
+                            data-i18n-aria-label="team.members.raafat.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -470,12 +546,12 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>مختص بعلاج مشاكل الفك والدوخة.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.raafat.specialties">مختص بعلاج مشاكل الفك والدوخة.</dd>
                                     </div>
                                     <div class="team-detail-item">
-                                        <dt>خدمات إضافية</dt>
-                                        <dd>علاج وإعادة تأهيل بيتي.</dd>
+                                        <dt data-i18n="team.labels.additionalServices">خدمات إضافية</dt>
+                                        <dd data-i18n="team.members.raafat.additionalServices">علاج وإعادة تأهيل بيتي.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -485,12 +561,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="tamer">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/تامر أبو زهره.jpg" alt="صورة تامر أبو زهره" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/تامر أبو زهره.jpg" alt="صورة تامر أبو زهره" data-i18n-alt="team.members.tamer.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-tamer">تامر أبو زهره</h3>
-                                <p class="team-role">أخصائي علاج طبيعي – فيزيوتربيا</p>
+                                <h3 class="team-name" id="specialist-name-tamer" data-i18n="team.members.tamer.name">تامر أبو زهره</h3>
+                                <p class="team-role" data-i18n="team.members.tamer.role">أخصائي علاج طبيعي – فيزيوتربيا</p>
                             </div>
                         </div>
 
@@ -500,8 +576,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-tamer"
-                            aria-label="عرض تفاصيل تامر أبو زهره">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل تامر أبو زهره"
+                            data-i18n-aria-label="team.members.tamer.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -514,16 +591,16 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>المنصب</dt>
-                                        <dd>مدير عيادة الرملة.</dd>
+                                        <dt data-i18n="team.labels.position">المنصب</dt>
+                                        <dd data-i18n="team.members.tamer.position">مدير عيادة الرملة.</dd>
                                     </div>
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>مختص بمشاكل المفاصل والعامود الفقري، وإعادة التأهيل بعد الإصابات والعمليات.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.tamer.specialties">مختص بمشاكل المفاصل والعامود الفقري، وإعادة التأهيل بعد الإصابات والعمليات.</dd>
                                     </div>
                                     <div class="team-detail-item">
-                                        <dt>خدمات إضافية</dt>
-                                        <dd>علاج منزلي وغيره.</dd>
+                                        <dt data-i18n="team.labels.additionalServices">خدمات إضافية</dt>
+                                        <dd data-i18n="team.members.tamer.additionalServices">علاج منزلي وغيره.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -533,12 +610,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="ali">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/علي سويطي.jpg" alt="صورة علي سويطي" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/علي سويطي.jpg" alt="صورة علي سويطي" data-i18n-alt="team.members.ali.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-ali">علي سويطي</h3>
-                                <p class="team-role">أخصائي علاج طبيعي – فيزيوتربيا</p>
+                                <h3 class="team-name" id="specialist-name-ali" data-i18n="team.members.ali.name">علي سويطي</h3>
+                                <p class="team-role" data-i18n="team.members.ali.role">أخصائي علاج طبيعي – فيزيوتربيا</p>
                             </div>
                         </div>
 
@@ -548,8 +625,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-ali"
-                            aria-label="عرض تفاصيل علي سويطي">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل علي سويطي"
+                            data-i18n-aria-label="team.members.ali.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -562,8 +640,8 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>علاج وإعادة تأهيل منزلي لمشاكل الحركة والأعصاب، وعلاج ما بعد العمليات الجراحية للمفاصل.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.ali.specialties">علاج وإعادة تأهيل منزلي لمشاكل الحركة والأعصاب، وعلاج ما بعد العمليات الجراحية للمفاصل.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -573,12 +651,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="mamoun">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/مأمون هريش.jpg" alt="صورة مأمون هريش" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/مأمون هريش.jpg" alt="صورة مأمون هريش" data-i18n-alt="team.members.mamoun.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-mamoun">مأمون هريش</h3>
-                                <p class="team-role">أخصائي علاج طبيعي – فيزيوتربيا</p>
+                                <h3 class="team-name" id="specialist-name-mamoun" data-i18n="team.members.mamoun.name">مأمون هريش</h3>
+                                <p class="team-role" data-i18n="team.members.mamoun.role">أخصائي علاج طبيعي – فيزيوتربيا</p>
                             </div>
                         </div>
 
@@ -588,8 +666,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-mamoun"
-                            aria-label="عرض تفاصيل مأمون هريش">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل مأمون هريش"
+                            data-i18n-aria-label="team.members.mamoun.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -602,8 +681,8 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>علاج الدوخة، وإعادة تأهيل الرياضيين.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.mamoun.specialties">علاج الدوخة، وإعادة تأهيل الرياضيين.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -613,12 +692,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="beshara">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/بشاره ادبيه.jpg" alt="صورة بشاره ادبيه" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/بشاره ادبيه.jpg" alt="صورة بشاره ادبيه" data-i18n-alt="team.members.beshara.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-beshara">بشاره ادبيه</h3>
-                                <p class="team-role">معالج بالطب البديل</p>
+                                <h3 class="team-name" id="specialist-name-beshara" data-i18n="team.members.beshara.name">بشاره ادبيه</h3>
+                                <p class="team-role" data-i18n="team.members.beshara.role">معالج بالطب البديل</p>
                             </div>
                         </div>
 
@@ -628,8 +707,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-beshara"
-                            aria-label="عرض تفاصيل بشاره ادبيه">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل بشاره ادبيه"
+                            data-i18n-aria-label="team.members.beshara.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -642,12 +722,12 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>مختص بالحجامة.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.beshara.specialties">مختص بالحجامة.</dd>
                                     </div>
                                     <div class="team-detail-item">
-                                        <dt>خدمات إضافية</dt>
-                                        <dd>المساج الطبي وغيره.</dd>
+                                        <dt data-i18n="team.labels.additionalServices">خدمات إضافية</dt>
+                                        <dd data-i18n="team.members.beshara.additionalServices">المساج الطبي وغيره.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -657,12 +737,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="marian">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/مريان عواوده.jpeg" alt="صورة مريان عواوده" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/مريان عواوده.jpeg" alt="صورة مريان عواوده" data-i18n-alt="team.members.marian.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-marian">مريان عواوده</h3>
-                                <p class="team-role">معالجة للنساء – معالجة بالطب البديل</p>
+                                <h3 class="team-name" id="specialist-name-marian" data-i18n="team.members.marian.name">مريان عواوده</h3>
+                                <p class="team-role" data-i18n="team.members.marian.role">معالجة للنساء – معالجة بالطب البديل</p>
                             </div>
                         </div>
 
@@ -672,8 +752,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-marian"
-                            aria-label="عرض تفاصيل مريان عواوده">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل مريان عواوده"
+                            data-i18n-aria-label="team.members.marian.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -686,8 +767,8 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>مجالات التخصص</dt>
-                                        <dd>مساج طبي، وحجامة طبية وغيره.</dd>
+                                        <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
+                                        <dd data-i18n="team.members.marian.specialties">مساج طبي، وحجامة طبية وغيره.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -697,12 +778,12 @@
                     <article class="team-card glass-card" data-specialist-card data-specialist-slug="mohamed-ghanaim">
                         <div class="team-card-main">
                             <div class="team-avatar" data-specialist-avatar data-specialist-avatar-type="image">
-                                <img src="assets/images/team/محمد غنايم.jpg" alt="صورة محمد غنايم" loading="lazy" data-specialist-image>
+                                <img src="assets/images/team/محمد غنايم.jpg" alt="صورة محمد غنايم" data-i18n-alt="team.members.mohamedGhanaim.alt" loading="lazy" data-specialist-image>
                             </div>
 
                             <div class="team-info">
-                                <h3 class="team-name" id="specialist-name-mohamed-ghanaim">محمد غنايم</h3>
-                                <p class="team-role">أخصائي أطراف صناعية معتمد</p>
+                                <h3 class="team-name" id="specialist-name-mohamed-ghanaim" data-i18n="team.members.mohamedGhanaim.name">محمد غنايم</h3>
+                                <p class="team-role" data-i18n="team.members.mohamedGhanaim.role">أخصائي أطراف صناعية معتمد</p>
                             </div>
                         </div>
 
@@ -712,8 +793,9 @@
                             data-specialist-toggle
                             aria-expanded="false"
                             aria-controls="specialist-details-mohamed-ghanaim"
-                            aria-label="عرض تفاصيل محمد غنايم">
-                            <span class="expand-btn-label">عرض التفاصيل</span>
+                            aria-label="عرض تفاصيل محمد غنايم"
+                            data-i18n-aria-label="team.members.mohamedGhanaim.showDetailsLabel">
+                            <span class="expand-btn-label" data-i18n="team.showDetails">عرض التفاصيل</span>
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
 
@@ -726,8 +808,8 @@
                             <div class="team-drawer-inner">
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
-                                        <dt>الخدمات</dt>
-                                        <dd>ضبانات وأحذية طبية.</dd>
+                                        <dt data-i18n="team.labels.services">الخدمات</dt>
+                                        <dd data-i18n="team.members.mohamedGhanaim.services">ضبانات وأحذية طبية.</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -735,12 +817,12 @@
                     </article>
                 </div>
 
-                <div class="team-carousel-controls" aria-label="تنقل أعضاء الفريق الطبي">
-                    <button type="button" class="team-carousel-btn team-carousel-prev" id="teamCarouselPrev" aria-label="عضو الفريق السابق" disabled>
+                <div class="team-carousel-controls" aria-label="تنقل أعضاء الفريق الطبي" data-i18n-aria-label="team.carousel.navigationLabel">
+                    <button type="button" class="team-carousel-btn team-carousel-prev" id="teamCarouselPrev" aria-label="عضو الفريق السابق" data-i18n-aria-label="team.carousel.previous" disabled>
                         <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
                     </button>
                     <span class="team-carousel-indicator" id="teamCarouselIndicator" aria-live="polite">1 / 10</span>
-                    <button type="button" class="team-carousel-btn team-carousel-next" id="teamCarouselNext" aria-label="عضو الفريق التالي">
+                    <button type="button" class="team-carousel-btn team-carousel-next" id="teamCarouselNext" aria-label="عضو الفريق التالي" data-i18n-aria-label="team.carousel.next">
                         <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -751,8 +833,8 @@
         <section class="why-choose-us section-shell" id="why-us">
             <div class="container">
                 <div class="section-heading">
-                    <span class="eyebrow">لماذا نحن؟</span>
-                    <h2 class="section-title">تجربة علاج مريحة وواضحة</h2>
+                    <span class="eyebrow" data-i18n="whyUs.eyebrow">لماذا نحن؟</span>
+                    <h2 class="section-title" data-i18n="whyUs.heading">تجربة علاج مريحة وواضحة</h2>
                 </div>
 
                 <div class="features-grid">
@@ -760,32 +842,32 @@
                         <div class="feature-icon">
                             <i class="fa-solid fa-user-doctor"></i>
                         </div>
-                        <h3 class="feature-title">خبرة طبية متخصصة</h3>
-                        <p class="feature-description">فريق من المعالجين ذوي الخبرة في العلاج الطبيعي وإعادة التأهيل.</p>
+                        <h3 class="feature-title" data-i18n="whyUs.features.expertise.title">خبرة طبية متخصصة</h3>
+                        <p class="feature-description" data-i18n="whyUs.features.expertise.description">فريق من المعالجين ذوي الخبرة في العلاج الطبيعي وإعادة التأهيل.</p>
                     </article>
 
                     <article class="feature-card glass-card">
                         <div class="feature-icon">
                             <i class="fa-solid fa-clipboard-check"></i>
                         </div>
-                        <h3 class="feature-title">خطة لكل مريض</h3>
-                        <p class="feature-description">نصمم خطة علاج مخصصة حسب احتياج الحالة وهدف المريض.</p>
+                        <h3 class="feature-title" data-i18n="whyUs.features.personalized.title">خطة لكل مريض</h3>
+                        <p class="feature-description" data-i18n="whyUs.features.personalized.description">نصمم خطة علاج مخصصة حسب احتياج الحالة وهدف المريض.</p>
                     </article>
 
                     <article class="feature-card glass-card">
                         <div class="feature-icon">
                             <i class="fa-solid fa-wave-square"></i>
                         </div>
-                        <h3 class="feature-title">تقنيات حديثة</h3>
-                        <p class="feature-description">استخدام أساليب علاجية مناسبة لتحسين الحركة وتقليل الألم.</p>
+                        <h3 class="feature-title" data-i18n="whyUs.features.modern.title">تقنيات حديثة</h3>
+                        <p class="feature-description" data-i18n="whyUs.features.modern.description">استخدام أساليب علاجية مناسبة لتحسين الحركة وتقليل الألم.</p>
                     </article>
 
                     <article class="feature-card glass-card">
                         <div class="feature-icon">
                             <i class="fa-solid fa-heart-pulse"></i>
                         </div>
-                        <h3 class="feature-title">نتائج فعالة</h3>
-                        <p class="feature-description">متابعة مستمرة لتحسين الأداء الحركي والوصول لأفضل نتيجة ممكنة.</p>
+                        <h3 class="feature-title" data-i18n="whyUs.features.results.title">نتائج فعالة</h3>
+                        <p class="feature-description" data-i18n="whyUs.features.results.description">متابعة مستمرة لتحسين الأداء الحركي والوصول لأفضل نتيجة ممكنة.</p>
                     </article>
                 </div>
             </div>
@@ -795,9 +877,9 @@
         <section class="booking section-shell" id="booking" aria-labelledby="booking-title">
             <div class="container">
                 <div class="section-heading">
-                    <span class="eyebrow">احجز الآن</span>
-                    <h2 class="section-title" id="booking-title">اختر الفرع واحجز عبر واتساب</h2>
-                    <p class="section-description">
+                    <span class="eyebrow" data-i18n="booking.eyebrow">احجز الآن</span>
+                    <h2 class="section-title" id="booking-title" data-i18n="booking.heading">اختر الفرع واحجز عبر واتساب</h2>
+                    <p class="section-description" data-i18n="booking.description">
                         شاهد موقع كل فرع على الخريطة، ويمكنك طلب أقرب موعد متاح مباشرة.
                     </p>
                 </div>
@@ -806,11 +888,11 @@
                     <article class="booking-card branch-location-card glass-card" data-branch-card>
                         <header class="branch-header">
                             <div class="branch-heading">
-                                <span class="branch-label">الفرع الأول</span>
-                                <h3 class="branch-name">فرع طرعان</h3>
+                                <span class="branch-label" data-i18n="branches.turan.label">الفرع الأول</span>
+                                <h3 class="branch-name" data-i18n="branches.turan.name">فرع طرعان</h3>
                                 <p class="branch-address">
                                     <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                                    <span>طرعان - شارع ابو بكر 13</span>
+                                    <span data-i18n="branches.turan.address">طرعان - شارع ابو بكر 13</span>
                                 </p>
                             </div>
                             <div class="branch-icon" aria-hidden="true">
@@ -823,7 +905,9 @@
                                 class="branch-map"
                                 src="https://www.google.com/maps?q=%D8%B7%D8%B1%D8%B9%D8%A7%D9%86%20%D8%B4%D8%A7%D8%B1%D8%B9%20%D8%A7%D8%A8%D9%88%20%D8%A8%D9%83%D8%B1%2013&output=embed"
                                 title="خريطة فرع طرعان"
+                                data-i18n-title="branches.turan.mapTitle"
                                 aria-label="خريطة موقع فرع طرعان في شارع ابو بكر 13"
+                                data-i18n-aria-label="branches.turan.mapLabel"
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade">
                             </iframe>
@@ -836,10 +920,12 @@
                                     type="button"
                                     data-booking-button
                                     data-branch="فرع طرعان"
+                                    data-i18n-data-branch="branches.turan.name"
                                     data-phone="972526020026"
-                                    aria-label="احجز موعداً في فرع طرعان عبر واتساب">
+                                    aria-label="احجز موعداً في فرع طرعان عبر واتساب"
+                                    data-i18n-aria-label="branches.turan.bookLabel">
                                     <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-                                    <span>احجز عبر واتساب</span>
+                                    <span data-i18n="booking.whatsAppButton">احجز عبر واتساب</span>
                                 </button>
 
                                 <a
@@ -847,9 +933,10 @@
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     class="btn btn-map-directions"
-                                    aria-label="فتح موقع فرع طرعان في خرائط جوجل">
+                                    aria-label="فتح موقع فرع طرعان في خرائط جوجل"
+                                    data-i18n-aria-label="branches.turan.directionsLabel">
                                     <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
-                                    <span>فتح في خرائط جوجل</span>
+                                    <span data-i18n="booking.openMaps">فتح في خرائط جوجل</span>
                                 </a>
                             </div>
                         </div>
@@ -858,11 +945,11 @@
                     <article class="booking-card branch-location-card glass-card" data-branch-card>
                         <header class="branch-header">
                             <div class="branch-heading">
-                                <span class="branch-label">الفرع الثاني</span>
-                                <h3 class="branch-name">فرع اللد والرملة</h3>
+                                <span class="branch-label" data-i18n="branches.ramla.label">الفرع الثاني</span>
+                                <h3 class="branch-name" data-i18n="branches.ramla.name">فرع اللد والرملة</h3>
                                 <p class="branch-address">
                                     <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                                    <span>الرملة - شارع Dr Salk 25</span>
+                                    <span data-i18n="branches.ramla.address">الرملة - شارع Dr Salk 25</span>
                                 </p>
                             </div>
                             <div class="branch-icon" aria-hidden="true">
@@ -875,7 +962,9 @@
                                 class="branch-map"
                                 src="https://www.google.com/maps?q=%D8%A7%D9%84%D8%B1%D9%85%D9%84%D8%A9%20Dr%20Salk%2025&output=embed"
                                 title="خريطة فرع اللد والرملة"
+                                data-i18n-title="branches.ramla.mapTitle"
                                 aria-label="خريطة موقع فرع اللد والرملة في شارع Dr Salk 25 بالرملة"
+                                data-i18n-aria-label="branches.ramla.mapLabel"
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade">
                             </iframe>
@@ -888,10 +977,12 @@
                                     type="button"
                                     data-booking-button
                                     data-branch="فرع اللد والرملة"
+                                    data-i18n-data-branch="branches.ramla.name"
                                     data-phone="972522950996"
-                                    aria-label="احجز موعداً في فرع اللد والرملة عبر واتساب">
+                                    aria-label="احجز موعداً في فرع اللد والرملة عبر واتساب"
+                                    data-i18n-aria-label="branches.ramla.bookLabel">
                                     <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-                                    <span>احجز عبر واتساب</span>
+                                    <span data-i18n="booking.whatsAppButton">احجز عبر واتساب</span>
                                 </button>
 
                                 <a
@@ -899,9 +990,10 @@
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     class="btn btn-map-directions"
-                                    aria-label="فتح موقع فرع اللد والرملة في خرائط جوجل">
+                                    aria-label="فتح موقع فرع اللد والرملة في خرائط جوجل"
+                                    data-i18n-aria-label="branches.ramla.directionsLabel">
                                     <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
-                                    <span>فتح في خرائط جوجل</span>
+                                    <span data-i18n="booking.openMaps">فتح في خرائط جوجل</span>
                                 </a>
                             </div>
                         </div>
@@ -911,70 +1003,70 @@
         </section>
 
         <!-- Testimonials Section -->
-        <section class="testimonials section-shell" id="testimonials" aria-label="آراء وتجارب المرضى" role="region" aria-roledescription="عارض آراء العملاء">
+        <section class="testimonials section-shell" id="testimonials" aria-label="آراء وتجارب المرضى" data-i18n-aria-label="testimonials.sectionLabel" role="region" aria-roledescription="عارض آراء العملاء" data-i18n-aria-roledescription="testimonials.roleDescription">
             <div class="container">
                 <div class="section-heading">
-                    <span class="eyebrow">آراء العملاء</span>
-                    <h2 class="section-title">تجارب مرضانا</h2>
+                    <span class="eyebrow" data-i18n="testimonials.eyebrow">آراء العملاء</span>
+                    <h2 class="section-title" data-i18n="testimonials.heading">تجارب مرضانا</h2>
                     <p class="testimonials-swipe-hint" aria-hidden="true">
                         <i class="fa-solid fa-hand-pointer"></i>
-                        <span>اسحب لقراءة المزيد من تجارب مرضانا</span>
+                        <span data-i18n="testimonials.swipeHint">اسحب لقراءة المزيد من تجارب مرضانا</span>
                     </p>
                 </div>
 
                 <div class="testimonials-grid" data-testimonials-carousel data-testimonials-track>
                     <article class="testimonial-card glass-card" data-testimonial-card>
                         <div class="testimonial-image">
-                            <img src="assets/images/hero/hero.jpeg" alt="عميل راض عن الخدمة" loading="lazy">
+                            <img src="assets/images/hero/hero.jpeg" alt="عميل راض عن الخدمة" data-i18n-alt="testimonials.items.first.alt" loading="lazy">
                         </div>
-                        <div class="testimonial-rating" aria-label="تقييم 5 من 5">
+                        <div class="testimonial-rating" aria-label="تقييم 5 من 5" data-i18n-aria-label="testimonials.fiveStars">
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                         </div>
-                        <p class="testimonial-text">تجربة رائعة، تحسن ألم الظهر لدي بشكل كبير بعد عدة جلسات. الفريق محترف جداً والخدمة ممتازة.</p>
-                        <p class="testimonial-author">محمد أحمد</p>
+                        <p class="testimonial-text" data-i18n="testimonials.items.first.text">تجربة رائعة، تحسن ألم الظهر لدي بشكل كبير بعد عدة جلسات. الفريق محترف جداً والخدمة ممتازة.</p>
+                        <p class="testimonial-author" data-i18n="testimonials.items.first.author">محمد أحمد</p>
                     </article>
 
                     <article class="testimonial-card glass-card" data-testimonial-card>
                         <div class="testimonial-image">
-                            <img src="assets/images/hero/hero-2.jpg" alt="عميلة راضية عن الخدمة" loading="lazy">
+                            <img src="assets/images/hero/hero-2.jpg" alt="عميلة راضية عن الخدمة" data-i18n-alt="testimonials.items.second.alt" loading="lazy">
                         </div>
-                        <div class="testimonial-rating" aria-label="تقييم 5 من 5">
+                        <div class="testimonial-rating" aria-label="تقييم 5 من 5" data-i18n-aria-label="testimonials.fiveStars">
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                         </div>
-                        <p class="testimonial-text">علاج ممتاز لمشاكل الركبة. المعالجون متخصصون والنتائج واضحة من الجلسات الأولى.</p>
-                        <p class="testimonial-author">سارة محمود</p>
+                        <p class="testimonial-text" data-i18n="testimonials.items.second.text">علاج ممتاز لمشاكل الركبة. المعالجون متخصصون والنتائج واضحة من الجلسات الأولى.</p>
+                        <p class="testimonial-author" data-i18n="testimonials.items.second.author">سارة محمود</p>
                     </article>
 
                     <article class="testimonial-card glass-card" data-testimonial-card>
                         <div class="testimonial-image">
-                            <img src="assets/images/hero/hero-3.jpg" alt="عميل يوصي بالعيادة" loading="lazy">
+                            <img src="assets/images/hero/hero-3.jpg" alt="عميل يوصي بالعيادة" data-i18n-alt="testimonials.items.third.alt" loading="lazy">
                         </div>
-                        <div class="testimonial-rating" aria-label="تقييم 5 من 5">
+                        <div class="testimonial-rating" aria-label="تقييم 5 من 5" data-i18n-aria-label="testimonials.fiveStars">
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                         </div>
-                        <p class="testimonial-text">أفضل عيادة علاج طبيعي. ساعدوني في التعافي بعد العملية بسرعة وفعالية. أنصح بها بشدة.</p>
-                        <p class="testimonial-author">علي حسن</p>
+                        <p class="testimonial-text" data-i18n="testimonials.items.third.text">أفضل عيادة علاج طبيعي. ساعدوني في التعافي بعد العملية بسرعة وفعالية. أنصح بها بشدة.</p>
+                        <p class="testimonial-author" data-i18n="testimonials.items.third.author">علي حسن</p>
                     </article>
                 </div>
 
-                <div class="testimonials-carousel-controls" aria-label="تنقل آراء العملاء">
-                    <button type="button" class="testimonials-carousel-btn testimonials-carousel-prev" data-testimonials-prev aria-label="عرض رأي العميل السابق" disabled>
+                <div class="testimonials-carousel-controls" aria-label="تنقل آراء العملاء" data-i18n-aria-label="testimonials.carousel.navigationLabel">
+                    <button type="button" class="testimonials-carousel-btn testimonials-carousel-prev" data-testimonials-prev aria-label="عرض رأي العميل السابق" data-i18n-aria-label="testimonials.carousel.previous" disabled>
                         <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
                     </button>
                     <span class="testimonials-carousel-indicator" data-testimonials-indicator aria-live="polite">1 / 3</span>
-                    <button type="button" class="testimonials-carousel-btn testimonials-carousel-next" data-testimonials-next aria-label="عرض رأي العميل التالي">
+                    <button type="button" class="testimonials-carousel-btn testimonials-carousel-next" data-testimonials-next aria-label="عرض رأي العميل التالي" data-i18n-aria-label="testimonials.carousel.next">
                         <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -982,11 +1074,11 @@
         </section>
 
         <!-- Contact Section -->
-        <section class="contact section-shell" id="contact">
+        <section class="contact section-shell" id="contact" aria-labelledby="contact-title">
             <div class="container">
                 <div class="section-heading">
-                    <span class="eyebrow">تواصل معنا</span>
-                    <h2 class="section-title">جاهزون لمساعدتك</h2>
+                    <span class="eyebrow" data-i18n="contact.eyebrow">تواصل معنا</span>
+                    <h2 class="section-title" id="contact-title" data-i18n="contact.heading">جاهزون لمساعدتك</h2>
                 </div>
 
                 <div class="contact-wrapper">
@@ -996,7 +1088,7 @@
                                 <i class="fa-solid fa-phone"></i>
                             </div>
                             <div class="contact-details">
-                                <h3>الهاتف</h3>
+                                <h3 data-i18n="contact.phone">الهاتف</h3>
                                 <p><a href="tel:972526020026">972526020026</a></p>
                                 <p><a href="tel:972522950996">972522950996</a></p>
                             </div>
@@ -1007,17 +1099,17 @@
                                 <i class="fa-brands fa-whatsapp"></i>
                             </div>
                             <div class="contact-details">
-                                <h3>واتساب</h3>
+                                <h3 data-i18n="contact.whatsApp">واتساب</h3>
                                 <p>
                                     <a href="https://wa.me/972526020026" target="_blank" rel="noopener noreferrer" class="whatsapp-link">
                                         <i class="fa-brands fa-whatsapp"></i>
-                                        فرع طرعان
+                                        <span data-i18n="branches.turan.name">فرع طرعان</span>
                                     </a>
                                 </p>
                                 <p>
                                     <a href="https://wa.me/972522950996" target="_blank" rel="noopener noreferrer" class="whatsapp-link">
                                         <i class="fa-brands fa-whatsapp"></i>
-                                        فرع اللد والرملة
+                                        <span data-i18n="branches.ramla.name">فرع اللد والرملة</span>
                                     </a>
                                 </p>
                             </div>
@@ -1028,32 +1120,32 @@
                                 <i class="fa-solid fa-map-location-dot"></i>
                             </div>
                             <div class="contact-details">
-                                <h3>الفروع</h3>
-                                <p>طرعان - شارع ابو بكر 13</p>
-                                <p>الرملة - شارع Dr Salk 25</p>
+                                <h3 data-i18n="contact.branches">الفروع</h3>
+                                <p data-i18n="branches.turan.address">طرعان - شارع ابو بكر 13</p>
+                                <p data-i18n="branches.ramla.address">الرملة - شارع Dr Salk 25</p>
                             </div>
                         </article>
                     </div>
 
                     <form class="contact-form glass-card" id="contactForm">
                         <div class="form-group">
-                            <label for="name">الاسم</label>
-                            <input type="text" id="name" name="name" autocomplete="name" required>
+                            <label for="name" data-i18n="contact.form.nameLabel">الاسم</label>
+                            <input type="text" id="name" name="name" autocomplete="name" placeholder="اكتب اسمك الكامل" data-i18n-placeholder="contact.form.namePlaceholder" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="phone">رقم الهاتف</label>
-                            <input type="tel" id="phone" name="phone" autocomplete="tel" required>
+                            <label for="phone" data-i18n="contact.form.phoneLabel">رقم الهاتف</label>
+                            <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="أدخل رقم هاتفك" data-i18n-placeholder="contact.form.phonePlaceholder" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="message">الرسالة</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
+                            <label for="message" data-i18n="contact.form.messageLabel">الرسالة</label>
+                            <textarea id="message" name="message" rows="5" placeholder="كيف يمكننا مساعدتك؟" data-i18n-placeholder="contact.form.messagePlaceholder" required></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary">
                             <i class="fa-brands fa-whatsapp"></i>
-                            إرسال عبر واتساب
+                            <span data-i18n="contact.form.submit">إرسال عبر واتساب</span>
                         </button>
                     </form>
                 </div>
@@ -1068,7 +1160,7 @@
             <div class="specialist-sheet-handle-bar" aria-hidden="true">
                 <span class="specialist-sheet-handle"></span>
             </div>
-            <button type="button" class="specialist-sheet-close" id="specialistSheetCloseBtn" aria-label="إغلاق التفاصيل">
+            <button type="button" class="specialist-sheet-close" id="specialistSheetCloseBtn" aria-label="إغلاق التفاصيل" data-i18n-aria-label="team.closeDetails">
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
             <div class="specialist-sheet-content">
@@ -1095,10 +1187,10 @@
     </div>
 
     <!-- Floating Mobile CTA -->
-    <div class="floating-cta" aria-label="زر حجز سريع">
+    <div class="floating-cta" aria-label="زر حجز سريع" data-i18n-aria-label="accessibility.quickBooking">
         <a href="#booking" class="floating-cta-btn">
             <i class="fa-brands fa-whatsapp"></i>
-            احجز الآن
+            <span data-i18n="common.bookNow">احجز الآن</span>
         </a>
     </div>
 
@@ -1108,30 +1200,30 @@
             <div class="footer-content">
                 <div class="footer-section footer-brand">
                     <div class="footer-logo">
-                        <img src="assets/images/logo.png" alt="العيادة" class="logo-img">
+                        <img src="assets/images/logo.png" alt="العيادة" data-i18n-alt="accessibility.clinicLogo" class="logo-img">
                     </div>
-                    <p class="footer-description">
+                    <p class="footer-description" data-i18n="footer.description">
                         مركز طبي متخصص بمشاكل المفاصل والعضلات والأعصاب والحركة، يقدم استشارات طبية وخدمات علاج وتأهيل.
                     </p>
                 </div>
 
                 <div class="footer-section">
-                    <h3 class="footer-title">روابط سريعة</h3>
+                    <h3 class="footer-title" data-i18n="footer.quickLinks">روابط سريعة</h3>
                     <ul class="footer-links">
-                        <li><a href="#home">الرئيسية</a></li>
-                        <li><a href="#services">الخدمات العلاجية</a></li>
-                        <li><a href="#team">الفريق الطبي</a></li>
-                        <li><a href="#booking">احجز موعد</a></li>
-                        <li><a href="#contact">تواصل معنا</a></li>
+                        <li><a href="#home" data-i18n="nav.home">الرئيسية</a></li>
+                        <li><a href="#services" data-i18n="nav.services">الخدمات العلاجية</a></li>
+                        <li><a href="#team" data-i18n="nav.team">الفريق الطبي</a></li>
+                        <li><a href="#booking" data-i18n="footer.bookAppointment">احجز موعد</a></li>
+                        <li><a href="#contact" data-i18n="nav.contact">تواصل معنا</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
-                    <h3 class="footer-title">الفروع</h3>
+                    <h3 class="footer-title" data-i18n="footer.branches">الفروع</h3>
                     <div class="footer-branches">
                         <p>
-                            <strong>فرع طرعان</strong>
-                            طرعان - شارع ابو بكر 13
+                            <strong data-i18n="branches.turan.name">فرع طرعان</strong>
+                            <span data-i18n="branches.turan.address">طرعان - شارع ابو بكر 13</span>
                             <a href="https://wa.me/972526020026" target="_blank" rel="noopener noreferrer" class="footer-whatsapp">
                                 <i class="fa-brands fa-whatsapp"></i>
                                 972526020026
@@ -1139,8 +1231,8 @@
                         </p>
 
                         <p>
-                            <strong>فرع اللد والرملة</strong>
-                            الرملة - شارع Dr Salk 25
+                            <strong data-i18n="branches.ramla.name">فرع اللد والرملة</strong>
+                            <span data-i18n="branches.ramla.address">الرملة - شارع Dr Salk 25</span>
                             <a href="https://wa.me/972522950996" target="_blank" rel="noopener noreferrer" class="footer-whatsapp">
                                 <i class="fa-brands fa-whatsapp"></i>
                                 972522950996
@@ -1150,15 +1242,15 @@
                 </div>
 
                 <div class="footer-section">
-                    <h3 class="footer-title">تابعنا</h3>
+                    <h3 class="footer-title" data-i18n="footer.followUs">تابعنا</h3>
                     <div class="social-links">
-                        <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="فيسبوك">
+                        <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="فيسبوك" data-i18n-aria-label="social.facebook">
                             <i class="fa-brands fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="إنستغرام">
+                        <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="إنستغرام" data-i18n-aria-label="social.instagram">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
-                        <a href="https://wa.me/972526020026" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="واتساب">
+                        <a href="https://wa.me/972526020026" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="واتساب" data-i18n-aria-label="social.whatsApp">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
                     </div>
@@ -1166,7 +1258,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2026 العيادة. جميع الحقوق محفوظة.</p>
+                <p>&copy; <span id="currentYear">2026</span> <span data-i18n="footer.copyright">العيادة. جميع الحقوق محفوظة.</span></p>
             </div>
         </div>
     </footer>

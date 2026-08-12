@@ -1,6 +1,6 @@
 /* =========================================================
    COMPLETE STYLE.CSS
-   Premium Arabic RTL Medical Website
+   Premium Multilingual Medical Website
    Responsive production stylesheet
 ========================================================= */
 
@@ -102,7 +102,10 @@
     --space-20: 5rem;
 
     /* Fonts */
-    --font-main: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-arabic: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-english: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-hebrew: "Noto Sans Hebrew", Arial, system-ui, sans-serif;
+    --font-main: var(--font-arabic);
 
     /* Motion */
     --transition-fast: 160ms ease;
@@ -128,8 +131,7 @@ body {
     font-family: var(--font-main);
     font-size: 16px;
     line-height: 1.7;
-    direction: rtl;
-    text-align: right;
+    text-align: start;
     color: var(--text-main);
     background:
         radial-gradient(circle at top right, rgba(212, 168, 67, 0.14), transparent 34rem),
@@ -138,6 +140,26 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+html[lang="ar"] {
+    --font-main: var(--font-arabic);
+}
+
+html[lang="en"] {
+    --font-main: var(--font-english);
+}
+
+html[lang="he"] {
+    --font-main: var(--font-hebrew);
+}
+
+html[dir="rtl"] body {
+    direction: rtl;
+}
+
+html[dir="ltr"] body {
+    direction: ltr;
 }
 
 body::selection {
@@ -175,6 +197,16 @@ button,
 input,
 textarea {
     font: inherit;
+}
+
+input,
+textarea {
+    text-align: start;
+}
+
+input[type="tel"] {
+    direction: ltr;
+    text-align: left;
 }
 
 button {
@@ -445,8 +477,7 @@ button {
 .nav-menu {
     position: absolute;
     top: calc(100% + 0.7rem);
-    right: 0.5rem;
-    left: 0.5rem;
+    inset-inline: 0.5rem;
     display: none;
     flex-direction: column;
     gap: 0.35rem;
@@ -484,7 +515,7 @@ button {
 .nav-link::after {
     content: "";
     position: absolute;
-    right: 0.9rem;
+    inset-inline-start: 0.9rem;
     bottom: 0.38rem;
     width: 0;
     height: 2px;
@@ -540,6 +571,169 @@ button {
 .whatsapp-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 16px 36px rgba(37, 211, 102, 0.28);
+}
+
+/* Accessible language selector */
+.language-selector {
+    position: relative;
+    z-index: 1100;
+    flex: 0 0 auto;
+}
+
+.language-toggle {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0;
+    border: 1px solid rgba(212, 168, 67, 0.24);
+    border-radius: 14px;
+    color: var(--gold-light);
+    background:
+        linear-gradient(135deg, rgba(212, 168, 67, 0.10), rgba(24, 187, 167, 0.06)),
+        rgba(255, 255, 255, 0.035);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        color var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.language-toggle:hover,
+.language-toggle[aria-expanded="true"],
+.language-selector.is-open .language-toggle {
+    color: var(--white);
+    border-color: rgba(69, 221, 202, 0.48);
+    background:
+        linear-gradient(135deg, rgba(212, 168, 67, 0.15), rgba(24, 187, 167, 0.12)),
+        rgba(255, 255, 255, 0.05);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.language-toggle:active {
+    transform: scale(0.97);
+}
+
+.language-toggle > .fa-globe {
+    flex: 0 0 auto;
+    font-size: 1rem;
+}
+
+.language-toggle-label,
+.language-toggle-chevron {
+    display: none;
+}
+
+.language-toggle-chevron {
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    transition: transform var(--transition-fast);
+}
+
+.language-toggle[aria-expanded="true"] .language-toggle-chevron,
+.language-selector.is-open .language-toggle-chevron {
+    transform: rotate(180deg);
+}
+
+.language-menu {
+    position: absolute;
+    top: calc(100% + 0.65rem);
+    inset-inline-end: 0;
+    z-index: 1200;
+    width: max-content;
+    min-width: 174px;
+    max-width: min(220px, calc(100vw - 1.5rem));
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.45rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 16px;
+    background:
+        linear-gradient(145deg, rgba(26, 34, 52, 0.98), rgba(12, 18, 30, 0.98));
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.48);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    transform-origin: top center;
+}
+
+.language-menu[hidden] {
+    display: none;
+}
+
+.language-menu:not([hidden]) {
+    animation: languageMenuIn 180ms ease both;
+}
+
+.language-menu li {
+    min-width: 0;
+}
+
+.language-option {
+    width: 100%;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.62rem 0.72rem;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    color: var(--text-muted);
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 750;
+    line-height: 1.35;
+    text-align: start;
+    transition:
+        color var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+}
+
+.language-option:hover,
+.language-option:focus-visible {
+    color: var(--white);
+    border-color: rgba(24, 187, 167, 0.22);
+    background: rgba(24, 187, 167, 0.09);
+}
+
+.language-option[aria-checked="true"],
+.language-option.is-active {
+    color: var(--gold-light);
+    border-color: rgba(212, 168, 67, 0.28);
+    background: rgba(212, 168, 67, 0.10);
+}
+
+.language-option .fa-check {
+    flex: 0 0 auto;
+    color: var(--teal-light);
+    font-size: 0.75rem;
+    opacity: 0;
+}
+
+.language-option[lang="ar"] {
+    font-family: var(--font-arabic);
+}
+
+.language-option[lang="en"] {
+    font-family: var(--font-english);
+}
+
+.language-option[lang="he"] {
+    font-family: var(--font-hebrew);
+}
+
+.language-option[aria-checked="true"] .fa-check,
+.language-option.is-active .fa-check {
+    opacity: 1;
 }
 
 .hamburger {
@@ -628,7 +822,6 @@ button {
     position: relative;
     min-width: 0;
     min-height: 0;
-    direction: rtl;
     overflow: hidden;
     background: #0d1422;
 }
@@ -695,7 +888,11 @@ button {
     align-items: flex-start;
     direction: rtl;
     padding: clamp(1.4rem, 6vw, 2rem);
-    text-align: right;
+    text-align: start;
+}
+
+html[dir="ltr"] .hero-top-copy {
+    direction: ltr;
 }
 
 .hero-kicker {
@@ -718,13 +915,13 @@ button {
     width: 100%;
     max-width: none;
     margin: 0 0 clamp(18px, 4vw, 26px);
-    font-family: 'Cairo', sans-serif;
+    font-family: inherit;
     font-size: clamp(2rem, 8vw, 3rem);
     font-weight: 900;
     line-height: 1.18;
     letter-spacing: normal;
-    direction: rtl;
-    text-align: right;
+    direction: inherit;
+    text-align: start;
     white-space: normal;
     word-break: normal;
     overflow-wrap: normal;
@@ -807,6 +1004,14 @@ button {
 
 .hero-services-btn.btn-secondary:hover i {
     transform: translateX(-3px);
+}
+
+html[dir="ltr"] .hero-services-btn.btn-secondary i {
+    transform: scaleX(-1);
+}
+
+html[dir="ltr"] .hero-services-btn.btn-secondary:hover i {
+    transform: scaleX(-1) translateX(-3px);
 }
 
 @keyframes heroSliderFade {
@@ -948,7 +1153,7 @@ button {
     flex-direction: column;
     align-items: stretch;
     padding: 0;
-    text-align: right;
+    text-align: start;
     background:
         radial-gradient(circle at top left, rgba(24, 187, 167, 0.10), transparent 44%),
         linear-gradient(155deg, rgba(23, 32, 51, 0.92), rgba(15, 22, 36, 0.94));
@@ -1279,7 +1484,7 @@ button {
     padding: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 14px;
-    text-align: right;
+    text-align: start;
     background: rgba(4, 10, 18, 0.24);
 }
 
@@ -1384,7 +1589,7 @@ button {
 .specialist-sheet-close {
     position: absolute;
     top: 0.85rem;
-    left: 1rem;
+    inset-inline-end: 1rem;
     z-index: 5;
     width: 44px;
     height: 44px;
@@ -1689,6 +1894,11 @@ button {
     display: none;
 }
 
+html[dir="ltr"] .team-carousel-btn i,
+html[dir="ltr"] .testimonials-carousel-btn i {
+    transform: scaleX(-1);
+}
+
 .testimonials-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -1871,8 +2081,7 @@ button {
 
 .floating-cta {
     position: fixed;
-    right: 1rem;
-    left: 1rem;
+    inset-inline: 1rem;
     bottom: 1rem;
     z-index: 999;
     display: block;
@@ -1964,7 +2173,7 @@ button {
 
 .footer-links a:hover {
     color: var(--white);
-    padding-right: var(--space-2);
+    padding-inline-start: var(--space-2);
 }
 
 .footer-branches {
@@ -2045,6 +2254,18 @@ button {
 /* =========================================================
    16. Animations
 ========================================================= */
+
+@keyframes languageMenuIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
 
 @keyframes menuDrop {
     from {
@@ -2359,9 +2580,18 @@ button {
     }
 
     .whatsapp-btn,
+    .language-toggle,
     .hamburger {
         width: 40px;
         height: 40px;
+    }
+
+    .nav-actions {
+        gap: 0.32rem;
+    }
+
+    .language-menu {
+        min-width: 166px;
     }
 
     .services-grid,
@@ -2424,6 +2654,25 @@ button {
     .container,
     .hero-split-clean .container {
         width: min(100% - 3rem, var(--container));
+    }
+
+    .language-toggle {
+        width: auto;
+        min-width: 44px;
+        padding-inline: 0.75rem;
+    }
+
+    .language-toggle-label,
+    .language-toggle-chevron {
+        display: inline;
+    }
+
+    .language-toggle-label {
+        max-width: 7.5rem;
+        overflow: hidden;
+        font-size: 0.84rem;
+        font-weight: 850;
+        text-overflow: ellipsis;
     }
 
     .people-grid,
@@ -2646,6 +2895,7 @@ button {
     .header,
     .floating-cta,
     .whatsapp-btn,
+    .language-selector,
     .hamburger,
     .hero-actions,
     .hero-buttons,
