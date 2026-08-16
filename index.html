@@ -19,13 +19,12 @@
                 savedLanguage = null;
             }
 
-            var browserLanguage = (window.navigator.language || '').toLowerCase();
-            var detectedLanguage = supportedLanguages.find(function (language) {
-                return browserLanguage.indexOf(language) === 0;
-            });
+            // The default language is always Arabic. Browser/device language is
+            // intentionally ignored -- only an explicit, previously saved user
+            // selection may override the Arabic default.
             var initialLanguage = supportedLanguages.indexOf(savedLanguage) !== -1
                 ? savedLanguage
-                : (detectedLanguage || 'ar');
+                : 'ar';
 
             document.documentElement.lang = initialLanguage;
             document.documentElement.dir = initialLanguage === 'en' ? 'ltr' : 'rtl';
@@ -412,7 +411,7 @@
                                 <dl class="team-details-list">
                                     <div class="team-detail-item">
                                         <dt data-i18n="team.labels.position">المنصب</dt>
-                                        <dd data-i18n="team.members.salem.position">مؤسس ومدير العيادة</dd>
+                                        <dd data-i18n="team.members.salem.position">مؤسس ومدير المركز</dd>
                                     </div>
                                     <div class="team-detail-item">
                                         <dt data-i18n="team.labels.specialties">مجالات التخصص</dt>
@@ -506,7 +505,7 @@
                                     </div>
                                     <div class="team-detail-item">
                                         <dt data-i18n="team.labels.education">التعليم</dt>
-                                        <dd data-i18n="team.members.fatima.education">خريجة جامعة فرانكفورت – ألمانيا.</dd>
+                                        <dd data-i18n="team.members.fatima.education">خريجة جامعة هامبورغ – ألمانيا.</dd>
                                     </div>
                                 </dl>
                             </div>

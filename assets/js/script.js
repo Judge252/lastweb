@@ -154,7 +154,7 @@ const translations = {
         salem: {
           name: "سالم محيليه",
           role: "أخصائي علاج طبيعي – فيزيوتربيا",
-          position: "مؤسس ومدير العيادة",
+          position: "مؤسس ومدير المركز",
           specialties:
             "مختص بعلاج مشاكل المفاصل والعامود الفقري، وإعادة التأهيل بعد المشاكل العصبية والعمليات الجراحية.",
           additionalServices: "علاج الرياضيين وعلاج الدوخة.",
@@ -170,7 +170,7 @@ const translations = {
           name: "الدكتورة فاطمه محيليه",
           role: "طبيبة أعصاب مختصة",
           specialties: "مشاكل الأعصاب، وباركنسون ومشاكل الحركة.",
-          education: "خريجة جامعة فرانكفورت – ألمانيا.",
+          education: "خريجة جامعة هامبورغ – ألمانيا.",
         },
 
         raafat: {
@@ -526,7 +526,7 @@ const translations = {
         salem: {
           name: "Salem Muheileh",
           role: "Physiotherapist",
-          position: "Clinic founder and director",
+          position: "Center founder and director",
           specialties:
             "Specializes in joint and spine conditions, as well as rehabilitation following neurological conditions and surgery.",
           additionalServices:
@@ -546,7 +546,7 @@ const translations = {
           specialties:
             "Neurological conditions, Parkinson’s disease and movement disorders.",
           education:
-            "Graduate of Goethe University Frankfurt, Germany.",
+            "Graduate of the University of Hamburg, Germany.",
         },
 
         raafat: {
@@ -916,9 +916,9 @@ const translations = {
 
       members: {
         salem: {
-          name: "סאלם מוחיילה",
+          name: "סאלם מחילייה",
           role: "פיזיותרפיסט",
-          position: "מייסד ומנהל המרפאה",
+          position: "מייסד ומנהל המרכז",
           specialties:
             "מומחה לטיפול בבעיות מפרקים ועמוד השדרה ולשיקום לאחר בעיות נוירולוגיות וניתוחים.",
           additionalServices:
@@ -933,12 +933,12 @@ const translations = {
         },
 
         fatima: {
-          name: "ד״ר פאטמה מוחיילה",
+          name: "ד״ר פאטמה מחילייה",
           role: "נוירולוגית מומחית",
           specialties:
             "בעיות נוירולוגיות, מחלת פרקינסון והפרעות תנועה.",
           education:
-            "בוגרת אוניברסיטת גתה בפרנקפורט, גרמניה.",
+            "בוגרת אוניברסיטת המבורג, גרמניה.",
         },
 
         raafat: {
@@ -968,7 +968,7 @@ const translations = {
         },
 
         mamoun: {
-          name: "מאמון חריש",
+          name: "מאמון הריש",
           role: "פיזיותרפיסט",
           specialties:
             "טיפול בסחרחורת ושיקום ספורטאים.",
@@ -1250,17 +1250,11 @@ function getSavedLanguage() {
   }
 }
 
-function detectBrowserLanguage() {
-  const browserLanguage = String(
-    window.navigator.language || "",
-  ).toLowerCase();
-
-  return (
-    SUPPORTED_LANGUAGES.find((language) =>
-      browserLanguage.startsWith(language),
-    ) || "ar"
-  );
-}
+// The default language for a new visitor is always Arabic. Browser/device
+// language is intentionally never used to choose the initial language --
+// only an explicit, previously saved user selection (see getSavedLanguage)
+// may override the Arabic default.
+const DEFAULT_LANGUAGE = "ar";
 
 function getInitialLanguage() {
   const savedLanguage = getSavedLanguage();
@@ -1269,19 +1263,7 @@ function getInitialLanguage() {
     return savedLanguage;
   }
 
-  const documentLanguage = String(
-    document.documentElement.lang || "",
-  ).toLowerCase();
-
-  if (
-    document.documentElement.dataset.languageReady ===
-      "pending" &&
-    SUPPORTED_LANGUAGES.includes(documentLanguage)
-  ) {
-    return documentLanguage;
-  }
-
-  return detectBrowserLanguage();
+  return DEFAULT_LANGUAGE;
 }
 
 let currentLanguage = getInitialLanguage();
@@ -1464,7 +1446,30 @@ function updateLanguageSelectorUI() {
   );
 }
 
-function refreshDirectionDependentState() {
+function getDocumentScrollPosition() {
+  return {
+    left: window.pageXOffset || window.scrollX || 0,
+    top: window.pageYOffset || window.scrollY || 0,
+  };
+}
+
+function restoreDocumentScrollPosition(
+  scrollPosition,
+) {
+  if (!scrollPosition) {
+    return;
+  }
+
+  window.scrollTo({
+    left: scrollPosition.left,
+    top: scrollPosition.top,
+    behavior: "auto",
+  });
+}
+
+function refreshDirectionDependentState(
+  onAfterLayout,
+) {
   window.requestAnimationFrame(() => {
     if (
       isMobileViewport() &&
@@ -1480,6 +1485,10 @@ function refreshDirectionDependentState() {
       testimonialsCardsList.length
     ) {
       scrollToTestimonial(testimonialsCarouselIndex);
+    }
+
+    if (typeof onAfterLayout === "function") {
+      onAfterLayout();
     }
   });
 }
@@ -1514,6 +1523,9 @@ function setLanguage(
     return false;
   }
 
+  const documentScrollPosition =
+    getDocumentScrollPosition();
+
   currentLanguage = normalizedLanguage;
 
   document.documentElement.lang = currentLanguage;
@@ -1533,7 +1545,11 @@ function setLanguage(
 
   applyTranslations();
   refreshDynamicTranslations();
-  refreshDirectionDependentState();
+  refreshDirectionDependentState(() => {
+    restoreDocumentScrollPosition(
+      documentScrollPosition,
+    );
+  });
 
   document.documentElement.dataset.languageReady =
     "true";
@@ -1571,7 +1587,13 @@ function closeLanguageMenu(
   updateLanguageSelectorUI();
 
   if (returnFocus) {
-    toggle.focus();
+    try {
+      toggle.focus({
+        preventScroll: true,
+      });
+    } catch (error) {
+      toggle.focus();
+    }
   }
 }
 
@@ -2680,6 +2702,47 @@ function updateSpecialistCarouselFromPosition() {
   updateSpecialistCarouselState(nearestIndex);
 }
 
+function scrollCarouselItemIntoView(
+  container,
+  item,
+  { behavior = "auto" } = {},
+) {
+  if (!container || !item) {
+    return;
+  }
+
+  const containerRect =
+    container.getBoundingClientRect();
+
+  const itemRect = item.getBoundingClientRect();
+
+  const containerCenter =
+    containerRect.left + containerRect.width / 2;
+
+  const itemCenter =
+    itemRect.left + itemRect.width / 2;
+
+  const delta = itemCenter - containerCenter;
+
+  // Do not clamp this ourselves: the valid scrollLeft range is [0, max]
+  // in LTR but is negative (or reversed) in RTL depending on the
+  // browser's convention. Passing the raw target lets the browser clamp
+  // it against whichever range it actually uses, so this works correctly
+  // in Arabic and Hebrew (RTL) as well as English (LTR).
+  const nextLeft = container.scrollLeft + delta;
+
+  if (typeof container.scrollTo === "function") {
+    container.scrollTo({
+      left: nextLeft,
+      top: 0,
+      behavior,
+    });
+    return;
+  }
+
+  container.scrollLeft = nextLeft;
+}
+
 function scrollSpecialistCardToView(index) {
   if (
     index < 0 ||
@@ -2688,12 +2751,17 @@ function scrollSpecialistCardToView(index) {
     return;
   }
 
-  specialistCardsList[index].scrollIntoView({
+  const teamGrid = qs(".team-grid");
+  const targetCard = specialistCardsList[index];
+
+  if (!teamGrid || !targetCard) {
+    return;
+  }
+
+  scrollCarouselItemIntoView(teamGrid, targetCard, {
     behavior: prefersReducedMotion()
       ? "auto"
       : "smooth",
-    block: "nearest",
-    inline: "center",
   });
 
   updateSpecialistCarouselState(index);
@@ -3198,16 +3266,18 @@ function scrollToTestimonial(index) {
   const targetCard =
     testimonialsCardsList[index];
 
-  if (!targetCard) {
+  const track =
+    qs("[data-testimonials-track]") ||
+    qs(".testimonials-grid");
+
+  if (!targetCard || !track) {
     return;
   }
 
-  targetCard.scrollIntoView({
+  scrollCarouselItemIntoView(track, targetCard, {
     behavior: prefersReducedMotion()
       ? "auto"
       : "smooth",
-    block: "nearest",
-    inline: "center",
   });
 
   updateTestimonialsCarouselState(index);
