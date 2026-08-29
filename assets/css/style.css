@@ -1358,6 +1358,10 @@ html[dir="ltr"] .hero-services-btn.btn-secondary:hover i {
     object-position: 50% 32%;
 }
 
+.team-card[data-specialist-slug="amin-abu-eshba"] .team-avatar img {
+    object-position: 50% 25%;
+}
+
 .team-avatar-fallback,
 .specialist-modal-fallback {
     position: relative;

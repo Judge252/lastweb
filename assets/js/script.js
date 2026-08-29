@@ -220,6 +220,11 @@ const translations = {
           role: "أخصائي أطراف صناعية معتمد",
           services: "ضبانات وأحذية طبية.",
         },
+
+        aminAbuEshba: {
+          name: "الدكتور امين ابو عشبه",
+          role: "طبيب عام",
+        },
       },
     },
 
@@ -604,6 +609,11 @@ const translations = {
             "Certified prosthetics and orthotics specialist",
           services:
             "Medical insoles and orthopedic footwear.",
+        },
+
+        aminAbuEshba: {
+          name: "Dr. Amin Abu Eshba",
+          role: "General Physician",
         },
       },
     },    whyUs: {
@@ -993,6 +1003,11 @@ const translations = {
           name: "מוחמד גנאים",
           role: "אורתוטיסט-פרותטיסט מוסמך",
           services: "מדרסים ונעליים אורתופדיות.",
+        },
+
+        aminAbuEshba: {
+          name: "ד״ר אמין אבו עשבה",
+          role: "רופא כללי",
         },
       },
     },    whyUs: {
